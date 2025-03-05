@@ -61,6 +61,11 @@ export class Player {
 
         // Ground collision
         if (this.y + this.height > this.game.canvas.height - 200) {
+            // Only play landing sound if we were falling
+            if (this.velocityY > 1) {
+                this.game.audio.play('land');
+            }
+            
             this.y = this.game.canvas.height - 200 - this.height;
             this.velocityY = 0;
             this.isGrounded = true;
@@ -78,6 +83,8 @@ export class Player {
         if (this.isGrounded) {
             this.velocityY = this.jumpForce;
             this.isGrounded = false;
+            // Play jump sound
+            this.game.audio.play('jump');
         }
     }
 

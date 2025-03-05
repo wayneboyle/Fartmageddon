@@ -58,8 +58,13 @@ export class Enemy {
                 this.game.addScore(this.properties[this.type].points);
                 this.destroy('jump');
             } else {
-                // Player collision without jumping - reduce score
+                // Player collision without jumping
                 this.game.addScore(-this.properties[this.type].points * 2);
+                
+                // Play bonk sound immediately
+                this.game.audio.play('bonk');
+                
+                // Destroy enemy after playing sound
                 this.destroy('collision');
             }
         }
@@ -83,11 +88,13 @@ export class Enemy {
     }
 
     checkCollision(player) {
+        // More forgiving collision detection
+        const margin = 10; // Give a small margin for better collision detection
         return (
-            this.x < player.x + player.width &&
-            this.x + this.width > player.x &&
-            this.y < player.y + player.height &&
-            this.y + this.height > player.y
+            this.x < player.x + player.width - margin &&
+            this.x + this.width > player.x + margin &&
+            this.y < player.y + player.height - margin &&
+            this.y + this.height > player.y + margin
         );
     }
 

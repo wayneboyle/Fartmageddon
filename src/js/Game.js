@@ -20,8 +20,9 @@ export class Game {
         this.resizeCanvas();
         this.setupEventListeners();
         
-        // Initialize audio
+        // Initialize audio and start background music
         this.audio = new AudioManager();
+        this.audio.startBackgroundMusic();
         
         // Game entities
         this.player = new Player(this, 100, 100);
