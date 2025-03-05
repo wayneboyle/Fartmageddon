@@ -1,0 +1,182 @@
+:root {
+    --primary-color: #4CAF50;
+    --background-color: #333;
+    --text-color: #fff;
+}
+
+body {
+    margin: 0;
+    overflow: hidden;
+    background: var(--background-color);
+    font-family: 'Comic Sans MS', cursive, sans-serif;
+}
+
+#gameCanvas {
+    background: linear-gradient(to bottom, #87CEEB, #73c2fb);
+}
+
+.hud {
+    position: fixed;
+    padding: 10px;
+    color: var(--text-color);
+    font-size: 18px;
+    text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5);
+}
+
+#gameTitle {
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 48px;
+    font-family: 'Comic Sans MS', cursive;
+    text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.5);
+    color: #FFD700;
+}
+
+#score {
+    top: 20px;
+    left: 20px;
+}
+
+#foodInventory {
+    top: 20px;
+    right: 20px;
+    display: flex;
+    gap: 15px;
+}
+
+.food-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 5px 10px;
+    border-radius: 10px;
+    margin: 0 5px;
+}
+
+.food-display {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-bottom: 2px;
+}
+
+.fart-label {
+    font-size: 12px;
+    color: #fff;
+    opacity: 0.8;
+    text-align: center;
+}
+
+.food-icon {
+    width: 24px;
+    height: 24px;
+    margin-right: 5px;
+}
+
+#startScreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.7);
+    color: var(--text-color);
+    z-index: 1000;
+}
+
+#startScreen .controls {
+    margin-top: 20px;
+    font-size: 18px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+#startScreen h1 {
+    font-size: 72px;
+    color: #FFD700;
+    margin-bottom: 30px;
+    text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5);
+}
+
+#startScreen p {
+    margin: 10px 0;
+}
+
+#startButton {
+    font-size: 24px;
+    padding: 15px 30px;
+    background: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin: 20px 0;
+}
+
+#startButton:hover {
+    transform: scale(1.1);
+    background: #45a049;
+}
+
+.btn {
+    padding: 12px 24px;
+    font-size: 20px;
+    cursor: pointer;
+    background: var(--primary-color);
+    border: none;
+    color: var(--text-color);
+    border-radius: 8px;
+    transition: transform 0.2s;
+    font-family: inherit;
+}
+
+.btn:hover {
+    transform: scale(1.05);
+}
+
+#comboDisplay {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 48px;
+    color: var(--text-color);
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+#gameControls {
+    bottom: 20px;
+    right: 20px;
+    display: flex;
+    gap: 20px;
+    z-index: 100;
+}
+
+.game-button {
+    font-size: 18px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 10px;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+}
+
+.game-button:hover {
+    background: rgba(0, 0, 0, 0.9);
+    transform: scale(1.05);
+}
+
+.game-button:active {
+    transform: scale(0.95);
+}

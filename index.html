@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fartmageddon - The Ultimate Food-Powered Adventure</title>
+    <link rel="stylesheet" href="src/styles/main.css">
+</head>
+<body>
+    <canvas id="gameCanvas"></canvas>
+    
+    <!-- HUD Elements -->
+    <div id="gameTitle" class="hud">Fartmaggedon</div>
+    <div id="score" class="hud">Score: 0</div>
+    <div id="gameControls" class="hud">
+        <button id="pauseButton" class="game-button">⏸️ Pause</button>
+        <button id="stopButton" class="game-button">⏹️ Stop</button>
+    </div>
+
+    <div id="foodInventory" class="hud">
+        <div class="food-item">
+            <div class="food-display">
+                <span class="food-icon">🥦</span>
+                <span id="broccoli-count" class="food-count">0</span>
+            </div>
+            <span class="fart-label">Basic (Space)</span>
+        </div>
+        <div class="food-item">
+            <div class="food-display">
+                <span class="food-icon">🌶️</span>
+                <span id="ghost-pepper-count" class="food-count">0</span>
+            </div>
+            <span class="fart-label">Spicy (X)</span>
+        </div>
+        <div class="food-item">
+            <div class="food-display">
+                <span class="food-icon">🧀</span>
+                <span id="cheese-count" class="food-count">0</span>
+            </div>
+            <span class="fart-label">Stinky (C)</span>
+        </div>
+        <div class="food-item">
+            <div class="food-display">
+                <span class="food-icon">⚛️</span>
+                <span id="atomic-count" class="food-count">0</span>
+            </div>
+            <span class="fart-label">Atomic (Z)</span>
+        </div>
+    </div>
+    
+    <!-- Combo Display -->
+    <div id="comboDisplay"></div>
+    
+    <!-- Start Screen -->
+    <div id="startScreen">
+        <h1>Fartmageddon</h1>
+        <p>Collect food, power up your farts, defeat enemies!</p>
+        <button id="startButton" class="btn">Start Game</button>
+        <style>
+            .range-bar {
+                display: inline-block;
+                height: 4px;
+                background: #FF4500;
+                margin-left: 10px;
+                vertical-align: middle;
+            }
+        </style>
+        <div class="controls">
+            <p>Controls:</p>
+            <p>↑ Jump | ← → Move</p>
+            <p>Fart Powers (by range):</p>
+            <p>Z: Atomic - Nuclear mushroom cloud <span class="range-bar" style="width: 100px;"></span></p>
+            <p>X: Ghost Pepper - Long-range spicy blast <span class="range-bar" style="width: 75px;"></span></p>
+            <p>C: Cheese - Medium-range stink bomb <span class="range-bar" style="width: 60px;"></span></p>
+            <p>Space: Broccoli - Short-range fog <span class="range-bar" style="width: 45px;"></span></p>
+        </div>
+    </div>
+
+    <script type="module">
+        import { Game } from './src/js/Game.js';
+        
+        // Wait for DOM to be fully loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('startButton').addEventListener('click', () => {
+                const game = new Game();
+                game.start();
+            });
+        });
+    </script>
+</body>
+</html>
