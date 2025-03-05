@@ -6,8 +6,8 @@ export class Player {
         this.x = x;
         this.y = y;
         this.sprite = new MonkeySprite(game);
-        this.width = this.sprite.poses.idle.width;
-        this.height = this.sprite.poses.idle.height;
+        this.width = 65;  // Original width
+        this.height = 60; // Original height
         this.velocityX = 0;
         this.velocityY = 0;
         this.speed = 5;

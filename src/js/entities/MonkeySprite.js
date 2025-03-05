@@ -3,10 +3,12 @@ import { SpriteGenerator } from './SpriteGenerator.js';
 export class MonkeySprite {
     constructor(game) {
         this.game = game;
-        this.loadSprite();
         this.currentFrame = 0;
         this.frameCount = 0;
         this.animationSpeed = 3; // Faster animations
+        this.isLoaded = false;
+        this.scale = 2; // Scale factor for the sprite
+        this.loadSprite();
         
         // Animation states
         this.state = 'idle';
@@ -31,14 +33,14 @@ export class MonkeySprite {
             atomic: {
                 width: 65,
                 height: 60,
-                offsetY: -10,
+                offsetY: -5,
                 frames: 8
             },
             // Broccoli Fog: Kung-fu stance
             broccoli: {
                 width: 65,
                 height: 60,
-                offsetY: -5,
+                offsetY: -2,
                 frames: 6
             },
             // Ghost Pepper: Break-dance spin
@@ -52,15 +54,25 @@ export class MonkeySprite {
             cheese: {
                 width: 65,
                 height: 60,
-                offsetY: -5,
+                offsetY: -2,
                 frames: 6
             }
         };
     }
 
-    loadSprite() {
-        this.sprite = new Image();
-        this.sprite.src = SpriteGenerator.createMonkeySprite();
+    async loadSprite() {
+        try {
+            const spriteUrl = await SpriteGenerator.createMonkeySprite();
+            this.sprite = new Image();
+            await new Promise((resolve, reject) => {
+                this.sprite.onload = resolve;
+                this.sprite.onerror = reject;
+                this.sprite.src = spriteUrl;
+            });
+            this.isLoaded = true;
+        } catch (error) {
+            console.error('Error loading monkey sprite:', error);
+        }
     }
 
     setPose(pose, direction) {
@@ -80,64 +92,44 @@ export class MonkeySprite {
     }
 
     draw(ctx, x, y) {
+        if (!this.isLoaded) return;
+        
         const pose = this.poses[this.state];
         
-        // Save context for transformations
-        ctx.save();
-        
-        // Position at center point
-        ctx.translate(x + pose.width/2, y + pose.height/2);
-        
-        // Flip horizontally if facing left
-        if (this.direction === -1) {
-            ctx.scale(-1, 1);
-        }
-        
-        // Special pose animations
-        switch(this.state) {
-            case 'atomic':
-                // Full backflip rotation
-                this.rotationAngle = (this.currentFrame / pose.frames) * Math.PI * 2;
-                ctx.rotate(this.rotationAngle);
-                break;
-            case 'ghost-pepper':
-                // Break-dance spin with horizontal flip
-                this.rotationAngle = (this.currentFrame / pose.frames) * Math.PI * 4;
-                ctx.rotate(this.rotationAngle);
-                break;
-            case 'broccoli':
-                // Kung-fu stance with leg kick
-                ctx.translate(0, Math.sin(this.currentFrame * Math.PI / 3) * 10);
-                ctx.rotate(Math.sin(this.currentFrame * Math.PI / 3) * 0.3);
-                break;
-            case 'cheese':
-                // Booty shake wiggle with squash and stretch
-                ctx.scale(1 + Math.sin(this.currentFrame * Math.PI) * 0.2, 
-                         1 - Math.sin(this.currentFrame * Math.PI) * 0.2);
-                ctx.rotate(Math.sin(this.currentFrame * Math.PI / 2) * 0.3);
-                break;
-            case 'running':
-                // Add bounce to running
-                ctx.translate(0, Math.sin(this.currentFrame * Math.PI) * 5);
-                break;
-            case 'idle':
-                // Gentle idle animation
-                ctx.translate(0, Math.sin(this.currentFrame * Math.PI / 2) * 3);
-                break;
-        }
-        
         // Draw monkey
-        ctx.drawImage(
-            this.sprite,
-            this.currentFrame * pose.width,
-            Object.keys(this.poses).indexOf(this.state) * pose.height,
-            pose.width,
-            pose.height,
-            -pose.width/2,
-            -pose.height/2 + pose.offsetY,
-            pose.width,
-            pose.height
-        );
+        if (this.sprite) {
+            // Save context for transformations
+            ctx.save();
+            
+            // Position at center point
+            const centerX = x + (pose.width * this.scale) / 2;
+            const centerY = y + pose.height + 10; // Added 10px offset to lower the monkey
+            
+            ctx.translate(centerX, centerY);
+            
+            // Apply scaling
+            ctx.scale(this.scale, this.scale);
+            
+            // Flip horizontally if facing left
+            if (this.direction === -1) {
+                ctx.scale(-1, 1);
+            }
+            
+            // Draw at half size to maintain quality but keep original dimensions
+            ctx.drawImage(
+                this.sprite,
+                this.currentFrame * 130,
+                Object.keys(this.poses).indexOf(this.state) * 120,
+                130,
+                120,
+                -65/2,
+                -60 + (pose.offsetY || 0),
+                65,
+                60
+            );
+            
+            ctx.restore();
+        }
         
         // Restore context
         ctx.restore();
