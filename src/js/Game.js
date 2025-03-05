@@ -96,6 +96,52 @@ export class Game {
         // Setup pause and stop buttons
         document.getElementById('pauseButton').addEventListener('click', () => this.togglePause());
         document.getElementById('stopButton').addEventListener('click', () => this.stopGame());
+
+        // Setup movement buttons
+        document.getElementById('leftButton').addEventListener('mousedown', () => this.keys['ArrowLeft'] = true);
+        document.getElementById('leftButton').addEventListener('mouseup', () => this.keys['ArrowLeft'] = false);
+        document.getElementById('leftButton').addEventListener('mouseleave', () => this.keys['ArrowLeft'] = false);
+        
+        document.getElementById('rightButton').addEventListener('mousedown', () => this.keys['ArrowRight'] = true);
+        document.getElementById('rightButton').addEventListener('mouseup', () => this.keys['ArrowRight'] = false);
+        document.getElementById('rightButton').addEventListener('mouseleave', () => this.keys['ArrowRight'] = false);
+        
+        document.getElementById('jumpButton').addEventListener('mousedown', () => this.keys['ArrowUp'] = true);
+        document.getElementById('jumpButton').addEventListener('mouseup', () => this.keys['ArrowUp'] = false);
+        document.getElementById('jumpButton').addEventListener('mouseleave', () => this.keys['ArrowUp'] = false);
+
+        // Touch events for mobile support
+        const addTouchEvents = (buttonId, key) => {
+            const button = document.getElementById(buttonId);
+            button.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                this.keys[key] = true;
+            });
+            button.addEventListener('touchend', (e) => {
+                e.preventDefault();
+                this.keys[key] = false;
+            });
+        };
+
+        addTouchEvents('leftButton', 'ArrowLeft');
+        addTouchEvents('rightButton', 'ArrowRight');
+        addTouchEvents('jumpButton', 'ArrowUp');
+
+        // Setup fart buttons
+        const setupFartButton = (buttonId, key) => {
+            const button = document.getElementById(buttonId);
+            const pressHandler = (e) => {
+                e.preventDefault();
+                this.tryFartPower(key);
+            };
+            button.addEventListener('mousedown', pressHandler);
+            button.addEventListener('touchstart', pressHandler);
+        };
+
+        setupFartButton('broccoliButton', 'broccoli');
+        setupFartButton('ghostPepperButton', 'ghost-pepper');
+        setupFartButton('cheeseButton', 'cheese');
+        setupFartButton('atomicButton', 'atomic');
     }
 
     tryFartPower(type) {
@@ -299,12 +345,10 @@ export class Game {
         if (--this.enemySpawnTimer <= 0) {
             const randomType = this.enemyTypes[Math.floor(Math.random() * this.enemyTypes.length)];
             
-            this.enemies.push(new Enemy(
-                this,
-                randomType,
-                this.canvas.width,
-                this.canvas.height - 150 // Spawn on ground
-            ));
+            const enemy = new Enemy(this, randomType, this.canvas.width, 0);
+            // Position enemy at ground level based on its height
+            enemy.y = this.canvas.height - 200 - enemy.height; // Ground height (200) minus enemy height
+            this.enemies.push(enemy);
             
             this.enemySpawnTimer = this.enemySpawnInterval;
         }
@@ -413,16 +457,16 @@ export class Game {
 
         // Draw ground
         this.ctx.fillStyle = '#8B4513';
-        this.ctx.fillRect(0, this.canvas.height - 100, this.canvas.width, 100);
+        this.ctx.fillRect(0, this.canvas.height - 200, this.canvas.width, 200);
 
         // Draw instructions on ground
         this.ctx.fillStyle = 'white';
         this.ctx.font = '16px Arial';
         this.ctx.textAlign = 'center';
         this.ctx.fillText('← → Move   ↑ Jump   Z: Atomic   X: Ghost Pepper   C: Cheese   Space: Broccoli', 
-            this.canvas.width / 2, this.canvas.height - 40);
+            this.canvas.width / 2, this.canvas.height - 90);
         this.ctx.fillText('Jump over or fart on enemies to score points! Collect food to power up your farts!',
-            this.canvas.width / 2, this.canvas.height - 20);
+            this.canvas.width / 2, this.canvas.height - 70);
 
         // Draw entities
         this.foods.forEach(food => food.draw(this.ctx));

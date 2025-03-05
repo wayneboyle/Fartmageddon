@@ -152,6 +152,89 @@ body {
     transition: opacity 0.3s;
 }
 
+#fartControls {
+    bottom: 120px;
+    left: 20px;
+    z-index: 100;
+}
+
+.fart-button-row {
+    display: flex;
+    gap: 10px;
+}
+
+.fart-button {
+    font-size: 20px;
+    width: 100px;
+    height: 50px;
+    border: none;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.8);
+    color: #333;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.fart-button .food-icon {
+    font-size: 24px;
+}
+
+.fart-button .button-label {
+    font-size: 14px;
+}
+
+.fart-button:hover {
+    background: rgba(255, 255, 255, 0.9);
+    transform: scale(1.1);
+}
+
+.fart-button:active {
+    background: rgba(255, 255, 255, 1);
+    transform: scale(0.95);
+}
+
+#movementControls {
+    bottom: 120px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 50px;
+    z-index: 100;
+}
+
+.movement-button {
+    font-size: 24px;
+    width: 50px;
+    height: 50px;
+    border: none;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.8);
+    color: #333;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.movement-button:hover {
+    background: rgba(255, 255, 255, 0.9);
+    transform: scale(1.1);
+}
+
+.movement-button:active {
+    background: rgba(255, 255, 255, 1);
+    transform: scale(0.95);
+}
+
 #gameControls {
     bottom: 20px;
     right: 20px;

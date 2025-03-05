@@ -60,8 +60,8 @@ export class Player {
         this.y += this.velocityY;
 
         // Ground collision
-        if (this.y + this.height > this.game.canvas.height - 100) {
-            this.y = this.game.canvas.height - 100 - this.height;
+        if (this.y + this.height > this.game.canvas.height - 200) {
+            this.y = this.game.canvas.height - 200 - this.height;
             this.velocityY = 0;
             this.isGrounded = true;
         } else {
