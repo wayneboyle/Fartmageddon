@@ -2,6 +2,7 @@
     --primary-color: #4CAF50;
     --background-color: #333;
     --text-color: #fff;
+    --button-size-mobile: 60px;
 }
 
 body {
@@ -33,6 +34,13 @@ body {
     color: #FFD700;
 }
 
+@media (max-width: 768px) {
+    #gameTitle {
+        font-size: 32px;
+        top: 10px;
+    }
+}
+
 #score {
     top: 20px;
     left: 20px;
@@ -43,6 +51,28 @@ body {
     right: 20px;
     display: flex;
     gap: 15px;
+}
+
+@media (max-width: 768px) {
+    #foodInventory {
+        top: 80px;
+        right: 10px;
+        gap: 8px;
+    }
+
+    .food-item {
+        padding: 3px 6px;
+    }
+
+    .food-icon {
+        width: 20px;
+        height: 20px;
+        margin-right: 3px;
+    }
+
+    .fart-label {
+        font-size: 10px;
+    }
 }
 
 .food-item {
@@ -163,6 +193,31 @@ body {
     gap: 10px;
 }
 
+@media (max-width: 768px) {
+    .fart-button-row {
+        gap: 5px;
+    }
+
+    .fart-button {
+        width: 70px;
+        height: 40px;
+        font-size: 16px;
+    }
+
+    .fart-button .food-icon {
+        font-size: 20px;
+    }
+
+    .fart-button .button-label {
+        font-size: 12px;
+    }
+
+    #fartControls {
+        bottom: 90px;
+        left: 10px;
+    }
+}
+
 .fart-button {
     font-size: 20px;
     width: 100px;
@@ -200,12 +255,46 @@ body {
 }
 
 #movementControls {
-    bottom: 120px;
-    left: 50%;
-    transform: translateX(-50%);
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
     display: flex;
-    gap: 50px;
+    gap: 10px;
     z-index: 100;
+}
+
+.movement-button {
+    width: 60px;
+    height: 60px;
+    font-size: 24px;
+    background: rgba(255, 255, 255, 0.8);
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+}
+
+@media (max-width: 768px) {
+    #movementControls {
+        bottom: 15px;
+        left: 10px;
+        gap: 8px;
+    }
+
+    .movement-button {
+        width: var(--button-size-mobile);
+        height: var(--button-size-mobile);
+        font-size: 20px;
+    }
+}
+
+
 }
 
 .movement-button {
