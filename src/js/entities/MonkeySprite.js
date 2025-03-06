@@ -23,14 +23,27 @@ export class MonkeySprite {
         this.totalDanceFrames = 50; // Total number of dance frames
         this.danceScale = 0.35; // Scale for dance animation
         
+        // Flip animation for jumping
+        this.flipImages = [];
+        this.isFlipping = false;
+        this.flipFrame = 0;
+        this.flipFrameCount = 0;
+        this.flipFramesLoaded = 0;
+        this.totalFlipFrames = 39; // Total number of flip frames
+        this.flipScale = 0.35; // Scale for flip animation
+        
         // For 30fps animation (assuming game runs at ~60fps)
         this.danceFrameRate = 2; // Show new frame every 2 game frames (30fps)
+        this.flipFrameRate = 2; // Show new frame every 2 game frames (30fps)
         
         // Load sprite
         this.loadSprite();
         
         // Preload dance frames
         this.preloadDanceFrames();
+        
+        // Preload flip frames
+        this.preloadFlipFrames();
         
         // Fart pose configurations
         this.poses = {
@@ -126,6 +139,39 @@ export class MonkeySprite {
             this.danceImages[frameIndex] = img;
         }
     }
+    
+    preloadFlipFrames() {
+        console.log('Preloading flip frames...');
+        
+        // Initialize array with exact size to maintain order
+        this.flipImages = new Array(this.totalFlipFrames);
+        this.flipFramesLoaded = 0;
+        
+        // Load all frames
+        for (let i = 0; i < this.totalFlipFrames; i++) {
+            const img = new Image();
+            const paddedNum = String(i).padStart(4, '0');
+            const frameIndex = i; // Already 0-based index
+            
+            // Set up event handlers before setting src
+            img.onload = () => {
+                this.flipFramesLoaded++;
+                console.log(`Loaded flip frame ${i} (${this.flipFramesLoaded}/${this.totalFlipFrames})`);
+            };
+            
+            img.onerror = () => {
+                // Try with absolute path if relative path fails
+                console.log(`Trying alternate path for flip frame ${i}`);
+                img.src = `/src/assets/animations/monkey_flip/monkey_animation_Flip_${paddedNum}-ipad.png`;
+            };
+            
+            // Start loading the image
+            img.src = `src/assets/animations/monkey_flip/monkey_animation_Flip_${paddedNum}-ipad.png`;
+            
+            // Store at specific index to maintain order
+            this.flipImages[frameIndex] = img;
+        }
+    }
 
 
 
@@ -139,11 +185,36 @@ export class MonkeySprite {
         if (['atomic', 'broccoli', 'ghost-pepper', 'cheese'].includes(pose)) {
             console.log('Starting dance animation');
             this.isDancing = true;
+            this.isFlipping = false; // Stop flipping if we start dancing
             this.danceFrame = 0;
             this.danceFrameCount = 0;
             
             // Debug log to check if frames are loaded
             console.log(`Dance animation started. Frames loaded: ${this.danceFramesLoaded}/${this.totalDanceFrames}`);
+        }
+    }
+    
+    startFlipAnimation() {
+        // Only start flip animation if we're not already dancing
+        if (!this.isDancing && this.flipFramesLoaded > 0) {
+            console.log('Starting flip animation');
+            this.isFlipping = true;
+            this.flipFrame = 0;
+            this.flipFrameCount = 0;
+            
+            // Debug log to check if frames are loaded
+            console.log(`Flip animation started. Frames loaded: ${this.flipFramesLoaded}/${this.totalFlipFrames}`);
+            return true;
+        }
+        return false;
+    }
+    
+    stopFlipAnimation() {
+        if (this.isFlipping) {
+            console.log('Stopping flip animation');
+            this.isFlipping = false;
+            this.flipFrame = 0;
+            this.state = 'idle';
         }
     }
 
@@ -165,6 +236,27 @@ export class MonkeySprite {
                     console.log('Dance animation complete');
                     this.isDancing = false;
                     this.danceFrame = 0;
+                    this.state = 'idle';
+                }
+            }
+        } 
+        // Update flip animation if flipping
+        else if (this.isFlipping) {
+            this.flipFrameCount++;
+            
+            // Update at 30fps (if game runs at ~60fps)
+            if (this.flipFrameCount >= this.flipFrameRate) {
+                this.flipFrameCount = 0;
+                this.flipFrame++;
+                
+                // Log each frame change for debugging
+                console.log(`Flip frame updated to: ${this.flipFrame}`);
+                
+                // End flip animation when we reach the end of frames
+                if (this.flipFrame >= this.totalFlipFrames) {
+                    console.log('Flip animation complete');
+                    this.isFlipping = false;
+                    this.flipFrame = 0;
                     this.state = 'idle';
                 }
             }
@@ -219,8 +311,44 @@ export class MonkeySprite {
                 // Draw regular sprite as fallback
                 this.drawRegularSprite(ctx, x, y);
             }
+        }
+        // Draw flip animation if flipping
+        else if (this.isFlipping && this.flipFrame < this.totalFlipFrames) {
+            const flipImg = this.flipImages[this.flipFrame];
+            
+            if (flipImg && flipImg.complete) {
+                // Center the flip animation on the monkey's position
+                const centerX = x + (65 * this.scale) / 2;
+                const centerY = y + (60 * this.scale) / 2 - 60; // Same offset as dance animation
+                
+                // Apply scaling and flipping
+                ctx.translate(centerX, centerY);
+                ctx.scale(this.flipScale, this.flipScale);
+                
+                if (this.direction === -1) {
+                    ctx.scale(-1, 1);
+                }
+                
+                // Draw the flip frame centered
+                ctx.drawImage(
+                    flipImg,
+                    -flipImg.width / 2,
+                    -flipImg.height / 2,
+                    flipImg.width,
+                    flipImg.height
+                );
+                
+                // Debug info - only log occasionally to avoid console spam
+                if (this.flipFrame % 5 === 0) {
+                    console.log(`Drawing flip frame ${this.flipFrame+1} of ${this.totalFlipFrames}`);
+                }
+            } else {
+                console.log(`Flip frame ${this.flipFrame+1} not ready yet`);
+                // Draw regular sprite as fallback
+                this.drawRegularSprite(ctx, x, y);
+            }
         } 
-        // Draw regular sprite if not dancing
+        // Draw regular sprite if not dancing or flipping
         else if (this.sprite) {
             this.drawRegularSprite(ctx, x, y);
         }

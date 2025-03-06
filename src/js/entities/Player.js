@@ -18,14 +18,16 @@ export class Player {
         
         // Fart system
         this.fartPowers = {
-            atomic: { energy: 0, maxEnergy: 100, duration: 45 },      // ~1.5 seconds
-            broccoli: { energy: 50, maxEnergy: 100, duration: 60 },   // 2 seconds
-            'ghost-pepper': { energy: 0, maxEnergy: 100, duration: 35 }, // ~1.2 seconds
-            cheese: { energy: 30, maxEnergy: 100, duration: 25 }      // ~0.8 seconds
+            atomic: { energy: 0, maxEnergy: 100, duration: 120 },      // Adjusted duration for dance
+            broccoli: { energy: 50, maxEnergy: 100, duration: 120 },   // Adjusted duration for dance
+            'ghost-pepper': { energy: 0, maxEnergy: 100, duration: 120 }, // Adjusted duration for dance
+            cheese: { energy: 30, maxEnergy: 100, duration: 120 }      // Adjusted duration for dance
         };
         
         this.poseTimer = 0;
         this.isPerformingTrick = false;
+        this.currentFartType = null;
+        this.lastFartTime = 0;
     }
 
     update() {
@@ -36,8 +38,12 @@ export class Player {
         if (this.poseTimer > 0) {
             this.poseTimer--;
             if (this.poseTimer === 0) {
-                this.isPerformingTrick = false;
-                this.sprite.setPose('idle', this.velocityX > 0 ? 1 : -1);
+                // Only reset if we're not in the middle of a dance animation
+                if (!this.sprite.isDancing) {
+                    this.isPerformingTrick = false;
+                    this.currentFartType = null;
+                    this.sprite.setPose('idle', this.velocityX > 0 ? 1 : -1);
+                }
             }
         }
         
@@ -64,6 +70,8 @@ export class Player {
             // Only play landing sound if we were falling
             if (this.velocityY > 1) {
                 this.game.audio.play('land');
+                // Stop flip animation when landing
+                this.sprite.stopFlipAnimation();
             }
             
             this.y = this.game.canvas.height - 200 - this.height;
@@ -83,6 +91,8 @@ export class Player {
         if (this.isGrounded) {
             this.velocityY = this.jumpForce;
             this.isGrounded = false;
+            // Start flip animation when jumping
+            this.sprite.startFlipAnimation();
             // Play jump sound
             this.game.audio.play('jump');
         }
@@ -92,11 +102,31 @@ export class Player {
         // Get energy from game's food count instead of internal energy
         if (this.game.foodCounts[type] <= 0) return false;
         
-        this.isPerformingTrick = true;
+        const currentTime = Date.now();
+        const timeSinceLastFart = currentTime - this.lastFartTime;
+        
+        // Only allow new fart if enough time has passed or it's a different type
+        if (timeSinceLastFart < 500 && type === this.currentFartType) {
+            return false;
+        }
+        
+        // Reset any existing fart state
+        if (this.isPerformingTrick) {
+            this.sprite.setPose('idle', direction);
+            this.poseTimer = 0;
+        }
+        
+        // Set the pose first to trigger dance animation
         this.sprite.setPose(type, direction);
+        
+        // Then set other properties
+        this.isPerformingTrick = true;
+        this.currentFartType = type;
         this.poseTimer = this.fartPowers[type].duration;
         this.sprite.direction = direction;
+        this.lastFartTime = currentTime;
         
+        console.log(`Using fart power: ${type}, direction: ${direction}`);
         return true;
     }
 
