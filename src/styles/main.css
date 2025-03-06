@@ -120,7 +120,7 @@ body {
 .food-icon {
     width: 24px;
     height: 24px;
-    margin-right: 5px;
+    flex-shrink: 0;
 }
 
 #startScreen {
@@ -211,6 +211,29 @@ button, .btn {
     gap: 10px;
 }
 
+.button-label {
+    text-align: center;
+    line-height: 1.2;
+    font-size: 8.5px;
+    margin-left: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex-grow: 1;
+    padding-right: 0;
+    letter-spacing: 0;
+    word-spacing: 0;
+    min-width: 0;
+    white-space: nowrap;
+    overflow: visible;
+    align-items: center;
+    margin-right: 0;
+    width: 100%;
+    padding-left: 0;
+}
+
+
+
 @media (max-width: 768px) {
     .fart-button-row {
         gap: 5px;
@@ -237,10 +260,14 @@ button, .btn {
 }
 
 .fart-button {
-    font-size: 20px;
+    font-size: 14px;
     width: 100px;
     height: 50px;
     border: none;
+    display: flex;
+    align-items: center;
+    padding: 5px;
+    gap: 5px;
     border-radius: 10px;
     background: rgba(255, 255, 255, 0.8);
     color: #333;
