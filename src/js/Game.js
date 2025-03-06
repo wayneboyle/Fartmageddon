@@ -40,6 +40,9 @@ export class Game {
         this.gameOverFlag = false;
         this.lastSpeedIncreaseScore = 0;
         this.minEnemySpawnInterval = 300; // Never spawn faster than 5 seconds
+        
+        // Create and show start overlay
+        this.createStartOverlay();
 
         // Start game loop immediately but don't spawn enemies until game starts
         this.gameLoop();
@@ -198,6 +201,58 @@ export class Game {
             cheese: '#FFD700'
         };
         return particleColors[type] || '#90EE90';
+    }
+
+    createStartOverlay() {
+        const overlay = document.createElement('div');
+        overlay.id = 'gameStartOverlay';
+        overlay.style.cssText = `
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            color: white;
+            text-align: center;
+            z-index: 1000;
+            font-family: var(--game-font);
+        `;
+
+        const instructions = document.createElement('div');
+        instructions.innerHTML = `
+            <h2>Controls:</h2>
+            <p>↑ Jump | ← → Move</p>
+            <h3>Fart Powers:</h3>
+            <p>Z: Atomic - Nuclear mushroom cloud</p>
+            <p>X: Ghost Pepper - Long-range spicy blast</p>
+            <p>C: Cheese - Medium-range stink bomb</p>
+            <p>Space: Broccoli - Short-range fog</p>
+        `;
+
+        const startButton = document.createElement('button');
+        startButton.textContent = 'Start Game';
+        startButton.style.cssText = `
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 18px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: var(--game-font);
+        `;
+
+        startButton.addEventListener('click', () => {
+            this.isRunning = true;
+            overlay.remove();
+        });
+
+        overlay.appendChild(instructions);
+        overlay.appendChild(startButton);
+        document.body.appendChild(overlay);
     }
 
     getFartRange(type) {

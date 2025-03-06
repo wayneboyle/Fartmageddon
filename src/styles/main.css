@@ -3,13 +3,32 @@
     --background-color: #333;
     --text-color: #fff;
     --button-size-mobile: 60px;
+    --game-font: 'Comic Sans MS', 'Comic Sans', cursive;
+}
+
+/* Ensure Comic Sans loads as early as possible */
+@font-face {
+    font-family: 'Comic Sans MS';
+    src: local('Comic Sans MS');
+    font-display: swap;
+}
+
+/* Force Comic Sans on all elements */
+*, *::before, *::after {
+    font-family: var(--game-font) !important;
+    font-display: swap;
+}
+
+/* Ensure form elements and buttons explicitly use Comic Sans */
+button, input, select, textarea, .btn, .game-button, .movement-button, .fart-button {
+    font-family: var(--game-font) !important;
+    font-display: swap;
 }
 
 body {
     margin: 0;
     overflow: hidden;
     background: var(--background-color);
-    font-family: 'Comic Sans MS', cursive, sans-serif;
 }
 
 #gameCanvas {
@@ -29,7 +48,6 @@ body {
     left: 50%;
     transform: translateX(-50%);
     font-size: 48px;
-    font-family: 'Comic Sans MS', cursive;
     text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.5);
     color: #FFD700;
 }
@@ -154,7 +172,7 @@ body {
     background: #45a049;
 }
 
-.btn {
+button, .btn {
     padding: 12px 24px;
     font-size: 20px;
     cursor: pointer;
@@ -163,7 +181,7 @@ body {
     color: var(--text-color);
     border-radius: 8px;
     transition: transform 0.2s;
-    font-family: inherit;
+    font-family: var(--game-font) !important;
 }
 
 .btn:hover {

@@ -4,6 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fartmageddon - The Ultimate Food-Powered Adventure</title>
+    <!-- Set Comic Sans as default font immediately -->
+    <style>
+        @font-face {
+            font-family: 'Comic Sans MS';
+            src: local('Comic Sans MS');
+            font-display: block;
+        }
+        html, body, * {
+            font-family: 'Comic Sans MS', 'Comic Sans', cursive !important;
+        }
+    </style>
     <link rel="stylesheet" href="src/styles/main.css">
 </head>
 <body>
@@ -80,40 +91,14 @@
     <!-- Combo Display -->
     <div id="comboDisplay"></div>
     
-    <!-- Start Screen -->
-    <div id="startScreen">
-        <h1>Fartmageddon</h1>
-        <p>Collect food, power up your farts, defeat enemies!</p>
-        <button id="startButton" class="btn">Start Game</button>
-        <style>
-            .range-bar {
-                display: inline-block;
-                height: 4px;
-                background: #FF4500;
-                margin-left: 10px;
-                vertical-align: middle;
-            }
-        </style>
-        <div class="controls">
-            <p>Controls:</p>
-            <p>↑ Jump | ← → Move</p>
-            <p>Fart Powers (by range):</p>
-            <p>Z: Atomic - Nuclear mushroom cloud <span class="range-bar" style="width: 100px;"></span></p>
-            <p>X: Ghost Pepper - Long-range spicy blast <span class="range-bar" style="width: 75px;"></span></p>
-            <p>C: Cheese - Medium-range stink bomb <span class="range-bar" style="width: 60px;"></span></p>
-            <p>Space: Broccoli - Short-range fog <span class="range-bar" style="width: 45px;"></span></p>
-        </div>
-    </div>
+
 
     <script type="module">
         import { Game } from './src/js/Game.js';
         
         // Wait for DOM to be fully loaded
         document.addEventListener('DOMContentLoaded', () => {
-            document.getElementById('startButton').addEventListener('click', () => {
-                const game = new Game();
-                game.start();
-            });
+            new Game();
         });
     </script>
 </body>
