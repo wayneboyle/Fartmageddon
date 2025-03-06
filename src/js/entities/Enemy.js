@@ -13,6 +13,7 @@ export class Enemy {
         this.destructionTimer = 0;
         this.destructionColor = null;
         this.sprite = new EnemySprite(type);
+        this.jumpedOver = false; // Track if player has jumped over this enemy
         
         // Enemy type specific properties
         this.properties = {

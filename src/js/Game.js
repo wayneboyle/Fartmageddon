@@ -10,6 +10,10 @@ export class Game {
         this.canvas = document.getElementById('gameCanvas');
         this.ctx = this.canvas.getContext('2d');
         this.score = 0;
+        this.level = 1;
+        this.lastLevelUpScore = 0;
+        this.pointsPerJump = 10;
+        this.pointsPerLevel = 500;
         this.foodCounts = {
             broccoli: 5,
             cheese: 5,
@@ -371,6 +375,18 @@ export class Game {
         }, 1000);
     }
 
+    showLevelUpText() {
+        const comboDisplay = document.getElementById('comboDisplay');
+        comboDisplay.textContent = `LEVEL ${this.level}!`;
+        comboDisplay.style.opacity = '1';
+        comboDisplay.style.color = '#FFD700'; // Gold color for level up
+        
+        setTimeout(() => {
+            comboDisplay.style.opacity = '0';
+            comboDisplay.style.color = 'white'; // Reset color
+        }, 2000);
+    }
+
     spawnFood() {
         if (--this.foodSpawnTimer <= 0) {
             // Select food type based on weights
@@ -413,7 +429,15 @@ export class Game {
     addScore(points) {
         this.score = Math.max(0, this.score + points); // Prevent score from going below 0
         
-        // Check if we've crossed a 50-point threshold
+        // Check for level up (every 500 points)
+        if (this.score >= this.lastLevelUpScore + this.pointsPerLevel) {
+            this.level++;
+            this.lastLevelUpScore = Math.floor(this.score / this.pointsPerLevel) * this.pointsPerLevel;
+            // Show level up message
+            this.showLevelUpText();
+        }
+        
+        // Check if we've crossed a 50-point threshold for enemy spawn speed
         const scoreThreshold = Math.floor(this.score / 50) * 50;
         if (scoreThreshold > this.lastSpeedIncreaseScore) {
             this.lastSpeedIncreaseScore = scoreThreshold;
@@ -448,6 +472,7 @@ export class Game {
 
     updateHUD() {
         document.getElementById('score').textContent = `Score: ${this.score}`;
+        document.getElementById('level').textContent = `Level ${this.level}`;
         document.getElementById('broccoli-count').textContent = this.foodCounts.broccoli;
         document.getElementById('ghost-pepper-count').textContent = this.foodCounts['ghost-pepper'];
         document.getElementById('cheese-count').textContent = this.foodCounts.cheese;
@@ -465,6 +490,17 @@ export class Game {
         if (this.keys['ArrowUp']) this.player.jump();
         
         this.player.update();
+        
+        // Check for jumping over enemies
+        this.enemies.forEach(enemy => {
+            if (!enemy.isDestroyed && 
+                this.player.y < enemy.y && 
+                Math.abs(this.player.x - enemy.x) < enemy.width && 
+                !enemy.jumpedOver) {
+                enemy.jumpedOver = true;
+                this.addScore(this.pointsPerJump);
+            }
+        });
 
         // Spawn and update foods
         this.spawnFood();
