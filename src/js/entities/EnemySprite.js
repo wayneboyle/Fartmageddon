@@ -4,6 +4,59 @@ export class EnemySprite {
         this.currentFrame = 0;
         this.frameCount = 0;
         this.animationSpeed = 4;
+        this.imageLoadAttempted = false;
+        this.imageLoaded = false;
+        
+        // Load alligator image if needed
+        if (type === 'alligator') {
+            this.loadAlligatorImage();
+        }
+    }
+
+    loadAlligatorImage() {
+        if (this.imageLoadAttempted) return;
+        
+        this.imageLoadAttempted = true;
+        this.alligatorImg = new Image();
+        
+        // Try different paths that work in both local and production
+        const tryLoadImage = (paths) => {
+            if (paths.length === 0) {
+                console.error('Failed to load alligator image after trying all paths');
+                return;
+            }
+            
+            const currentPath = paths[0];
+            const remainingPaths = paths.slice(1);
+            
+            this.alligatorImg.onerror = () => {
+                console.log('Failed to load from:', currentPath);
+                tryLoadImage(remainingPaths);
+            };
+            
+            this.alligatorImg.onload = () => {
+                console.log('Successfully loaded alligator image from:', currentPath);
+                this.imageLoaded = true;
+                console.log('Alligator image dimensions:', {
+                    width: this.alligatorImg.width,
+                    height: this.alligatorImg.height
+                });
+            };
+            
+            this.alligatorImg.src = currentPath;
+        };
+        
+        // Try paths in order (will try next on failure)
+        tryLoadImage([
+            '/assets/characters/Alligator_1.png',    // Vercel public path
+            'assets/characters/Alligator_1.png',      // Relative public path
+            '/src/assets/characters/Alligator_1.png', // Full path from root
+            'src/assets/characters/Alligator_1.png',  // Relative path
+            './src/assets/characters/Alligator_1.png' // Explicit relative path
+        ]);
+
+        // Log attempt for debugging
+        console.log('Attempting to load alligator image...');
     }
 
     draw(ctx, x, y, width, height) {
@@ -29,35 +82,42 @@ export class EnemySprite {
     }
 
     drawAlligator(ctx, x, y, width, height) {
-        // Body
+        // Try to load the image if we haven't yet
+        if (!this.imageLoadAttempted) {
+            this.loadAlligatorImage();
+        }
+        
+        // Add a slight bounce animation
+        const bounceOffset = Math.sin(this.currentFrame/10) * 2;
+        
+        // If image is loaded and ready, draw it
+        if (this.imageLoaded && this.alligatorImg && this.alligatorImg.complete && this.alligatorImg.naturalWidth > 0) {
+            try {
+                // Log the first time we successfully draw
+                if (!this.hasDrawnOnce) {
+                    console.log('Drawing alligator at:', { x, y, width, height });
+                    this.hasDrawnOnce = true;
+                }
+                
+                ctx.drawImage(this.alligatorImg, x, y + bounceOffset, width, height);
+            } catch (error) {
+                console.error('Error drawing alligator:', error);
+                this.drawFallbackAlligator(ctx, x, y, width, height);
+            }
+        } else {
+            // Draw fallback if image isn't ready
+            this.drawFallbackAlligator(ctx, x, y, width, height);
+            if (!this.imageLoaded) {
+                console.log('Image not yet loaded, using fallback');
+            }
+        }
+    }
+    
+    drawFallbackAlligator(ctx, x, y, width, height) {
+        // Simple rectangle as fallback
         ctx.fillStyle = '#2E8B57';
-        ctx.beginPath();
-        ctx.ellipse(x + width/2, y + height/2, width/2, height/3, 0, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.stroke();
-
-        // Head
-        ctx.beginPath();
-        ctx.ellipse(x + width * 0.8, y + height/2, width/4, height/4, 0, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.stroke();
-
-        // Jaws
-        ctx.beginPath();
-        ctx.moveTo(x + width * 0.7, y + height/2);
-        ctx.lineTo(x + width, y + height/2);
-        ctx.stroke();
-
-        // Eyes
-        ctx.fillStyle = 'white';
-        ctx.beginPath();
-        ctx.arc(x + width * 0.85, y + height * 0.4, 4, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.stroke();
-
-        // Legs
-        this.drawLeg(ctx, x + width * 0.3, y + height * 0.8, 10, Math.sin(this.currentFrame/10) * 0.2);
-        this.drawLeg(ctx, x + width * 0.6, y + height * 0.8, 10, -Math.sin(this.currentFrame/10) * 0.2);
+        ctx.fillRect(x, y, width, height);
+        ctx.strokeRect(x, y, width, height);
     }
 
     drawCrab(ctx, x, y, width, height) {
