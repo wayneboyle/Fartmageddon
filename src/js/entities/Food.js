@@ -4,8 +4,8 @@ export class Food {
         this.type = type;
         this.x = x;
         this.y = y;
-        this.width = 30;
-        this.height = 30;
+        this.width = 50;  // Increased size from 30 to 50
+        this.height = 50; // Increased size from 30 to 50
         this.velocityX = -3;
         
         // Food type specific properties
@@ -26,7 +26,29 @@ export class Food {
         
         // Load the appropriate image
         this.image = new Image();
-        this.image.src = `./src/assets/images/food/${this.type}.svg`;
+        
+        // Map the food type to the new PNG files with transparent backgrounds
+        const imageMap = {
+            'broccoli': 'broccoli.png',
+            'cheese': 'cheese.png',
+            'ghost-pepper': 'pepper.png',
+            'atomic': 'atomic.png'
+        };
+        
+        // Set up error handler before setting src
+        this.image.onerror = () => {
+            console.error(`Failed to load image for food type: ${this.type}`);
+            // Try with absolute path if relative path fails
+            this.image.src = `/src/assets/foods/${imageMap[this.type]}`;
+        };
+        
+        // Set up load handler
+        this.image.onload = () => {
+            console.log(`Successfully loaded image for food type: ${this.type}`);
+        };
+        
+        // Start loading the image with relative path (same pattern as MonkeySprite)
+        this.image.src = `src/assets/foods/${imageMap[this.type]}`;
     }
 
     update() {
@@ -59,6 +81,7 @@ export class Food {
     draw(ctx) {
         // Check if image is loaded
         if (this.image.complete) {
+            // Draw the image with increased size (PNG files have natural transparency)
             ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
         } else {
             // Fallback to colored rectangle if image isn't loaded yet
