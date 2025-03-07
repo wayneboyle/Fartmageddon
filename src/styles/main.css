@@ -13,16 +13,29 @@
     font-display: swap;
 }
 
+/* Fallback Comic Sans web font for devices that don't have it installed */
+@font-face {
+    font-family: 'Comic Sans MS';
+    src: url('https://db.onlinewebfonts.com/t/7cc6719bd5f0310be3150ba33418e72e.woff2') format('woff2'),
+         url('https://db.onlinewebfonts.com/t/7cc6719bd5f0310be3150ba33418e72e.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
 /* Force Comic Sans on all elements */
 *, *::before, *::after {
     font-family: var(--game-font) !important;
     font-display: swap;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 /* Ensure form elements and buttons explicitly use Comic Sans */
 button, input, select, textarea, .btn, .game-button, .movement-button, .fart-button {
     font-family: var(--game-font) !important;
     font-display: swap;
+    text-rendering: optimizeLegibility;
 }
 
 body {

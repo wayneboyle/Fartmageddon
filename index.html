@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://db.onlinewebfonts.com">
     <base href="/">
     <title>Fartmageddon - The Ultimate Food-Powered Adventure</title>
     <!-- Set Comic Sans as default font immediately -->
@@ -12,6 +13,17 @@
             src: local('Comic Sans MS');
             font-display: block;
         }
+        
+        /* Fallback Comic Sans web font for devices that don't have it installed */
+        @font-face {
+            font-family: 'Comic Sans MS';
+            src: url('https://db.onlinewebfonts.com/t/7cc6719bd5f0310be3150ba33418e72e.woff2') format('woff2'),
+                 url('https://db.onlinewebfonts.com/t/7cc6719bd5f0310be3150ba33418e72e.woff') format('woff');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
+        
         html, body, * {
             font-family: 'Comic Sans MS', 'Comic Sans', cursive !important;
         }
