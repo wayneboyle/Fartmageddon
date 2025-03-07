@@ -23,6 +23,10 @@ export class Food {
                 energyValue: 100
             }
         };
+        
+        // Load the appropriate image
+        this.image = new Image();
+        this.image.src = `./src/assets/images/food/${this.type}.svg`;
     }
 
     update() {
@@ -53,23 +57,21 @@ export class Food {
     }
 
     draw(ctx) {
-        const emoji = {
-            broccoli: '🥦',
-            'ghost-pepper': '🌶️',
-            cheese: '🧀',
-            atomic: '⚛️'
-        }[this.type];
-
-        ctx.font = `${this.width}px Arial`;
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        
-        // Draw the emoji
-        ctx.fillText(
-            emoji,
-            this.x + this.width/2,
-            this.y + this.height/2
-        );
+        // Check if image is loaded
+        if (this.image.complete) {
+            ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
+        } else {
+            // Fallback to colored rectangle if image isn't loaded yet
+            const colors = {
+                broccoli: '#2ECC40',  // Green
+                'ghost-pepper': '#FF4136',  // Red
+                cheese: '#FFDC00',  // Yellow
+                atomic: '#B10DC9'   // Purple
+            };
+            
+            ctx.fillStyle = colors[this.type] || '#AAAAAA';
+            ctx.fillRect(this.x, this.y, this.width, this.height);
+        }
     }
 
 
