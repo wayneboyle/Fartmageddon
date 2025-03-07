@@ -1,30 +1,10 @@
-/* Force iPhone movement controls to the right side */
-#movementControls {
-    position: fixed !important;
-}
+/* iPhone-specific vertical positioning for movement controls */
 
-/* Apply only to iPhones */
+/* Apply to all iPhones */
 @media only screen and (max-device-width: 812px) and (-webkit-min-device-pixel-ratio: 2) {
     #movementControls {
-        left: auto !important;
-        right: 10px !important;
-        bottom: 120px !important;
-        display: flex !important;
-        flex-direction: row !important; /* Changed from row-reverse to row */
+        bottom: 120px !important; /* Match the vertical position of fart controls */
         z-index: 9999 !important;
-    }
-    
-    /* Reorder the buttons */
-    #leftButton {
-        order: 1 !important;
-    }
-    
-    #jumpButton {
-        order: 2 !important;
-    }
-    
-    #rightButton {
-        order: 3 !important;
     }
 }
 
@@ -35,24 +15,7 @@
        only screen and (device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3),
        only screen and (device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3) {
     #movementControls {
-        left: auto !important;
-        right: 10px !important;
-        bottom: 120px !important;
-        display: flex !important;
-        flex-direction: row !important; /* Changed from row-reverse to row */
+        bottom: 120px !important; /* Match the vertical position of fart controls */
         z-index: 9999 !important;
-    }
-    
-    /* Reorder the buttons */
-    #leftButton {
-        order: 1 !important;
-    }
-    
-    #jumpButton {
-        order: 2 !important;
-    }
-    
-    #rightButton {
-        order: 3 !important;
     }
 }

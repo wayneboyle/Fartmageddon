@@ -354,11 +354,27 @@ button, .btn {
 
 #movementControls {
     position: fixed;
-    bottom: 20px;
-    left: 20px;
+    bottom: 120px; /* Match the vertical position of fart controls */
+    right: 20px;
     display: flex;
     gap: 10px;
     z-index: 100;
+    
+    /* Set button order for all devices */
+    flex-direction: row;
+}
+
+/* Set the order of movement buttons for all devices */
+#leftButton {
+    order: 1;
+}
+
+#jumpButton {
+    order: 2;
+}
+
+#rightButton {
+    order: 3;
 }
 
 .movement-button {
@@ -380,8 +396,8 @@ button, .btn {
 
 @media (max-width: 768px) {
     #movementControls {
-        bottom: 15px;
-        left: 10px;
+        bottom: 90px; /* Match the vertical position of fart controls on tablets */
+        right: 10px;
         gap: 8px;
     }
 
@@ -394,8 +410,6 @@ button, .btn {
     /* iPhone-specific controls */
     @media only screen and (-webkit-min-device-pixel-ratio: 2) {
         #movementControls {
-            left: auto !important; /* Remove left positioning */
-            right: 10px !important; /* Position on the right side */
             bottom: 120px !important; /* Match the vertical position of fart controls */
         }
     }
