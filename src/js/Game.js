@@ -21,6 +21,9 @@ export class Game {
             atomic: 5
         };
         
+        // Check and enforce landscape orientation
+        this.checkOrientation();
+        
         this.resizeCanvas();
         this.setupEventListeners();
         
@@ -72,6 +75,24 @@ export class Game {
     resizeCanvas() {
         this.canvas.width = window.innerWidth;
         this.canvas.height = window.innerHeight;
+        
+        // If in portrait mode on mobile, show a message
+        const isPortrait = window.innerHeight > window.innerWidth;
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        
+        if (isMobile && isPortrait) {
+            // CSS will handle showing the rotation message
+            console.log('Please rotate your device to landscape mode for the best experience');
+        }
+    }
+
+    checkOrientation() {
+        // Lock to landscape orientation if supported
+        if (screen.orientation && screen.orientation.lock) {
+            screen.orientation.lock('landscape').catch(error => {
+                console.log('Orientation lock failed: ', error);
+            });
+        }
     }
 
     setupEventListeners() {
@@ -99,7 +120,15 @@ export class Game {
         });
         
         window.addEventListener('keyup', (e) => this.keys[e.key] = false);
-        window.addEventListener('resize', () => this.resizeCanvas());
+        window.addEventListener('resize', () => {
+            this.resizeCanvas();
+            this.checkOrientation();
+        });
+        
+        // Listen for orientation changes
+        window.addEventListener('orientationchange', () => {
+            this.checkOrientation();
+        });
 
         // Setup pause and stop buttons
         document.getElementById('pauseButton').addEventListener('click', () => this.togglePause());
@@ -208,55 +237,143 @@ export class Game {
     }
 
     createStartOverlay() {
-        const overlay = document.createElement('div');
-        overlay.id = 'gameStartOverlay';
-        overlay.style.cssText = `
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(0, 0, 0, 0.8);
-            padding: 20px;
-            border-radius: 10px;
-            color: white;
-            text-align: center;
-            z-index: 1000;
-            font-family: var(--game-font);
-        `;
+        // Remove any existing overlay first to avoid duplicates
+        const existingOverlay = document.getElementById('gameStartOverlay');
+        if (existingOverlay) {
+            existingOverlay.remove();
+        }
+        
+        // Check if we're on iPhone
+        const isIPhone = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        
+        // Create a completely different overlay for iPhone vs other devices
+        if (isIPhone) {
+            // For iPhone: Create a small overlay with instructions and start button
+            const overlay = document.createElement('div');
+            overlay.id = 'gameStartOverlay';
+            
+            const instructions = document.createElement('div');
+            instructions.innerHTML = `
+                <h2>Game Controls</h2>
+                <p>↑:Jump | ←→:Move</p>
+                <p>Z:Atomic | X:Pepper</p>
+                <p>C:Cheese | Space:Broccoli</p>
+            `;
+            
+            const startButton = document.createElement('button');
+            startButton.textContent = 'Start Game';
+            
+            startButton.addEventListener('click', () => {
+                this.isRunning = true;
+                overlay.remove();
+            });
+            
+            overlay.appendChild(instructions);
+            overlay.appendChild(startButton);
+            document.body.appendChild(overlay);
+        } else if (isMobile) {
+            // For other mobile: Create a small overlay at the top
+            const overlay = document.createElement('div');
+            overlay.id = 'gameStartOverlay';
+            overlay.style.cssText = `
+                position: fixed;
+                top: 10px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: rgba(0, 0, 0, 0.8);
+                padding: 5px;
+                border-radius: 5px;
+                color: white;
+                text-align: center;
+                z-index: 1000;
+                font-family: var(--game-font);
+                width: 60%;
+            `;
+            
+            const instructions = document.createElement('div');
+            instructions.innerHTML = `
+                <p style="font-size: 10px; margin: 1px 0;">↑:Jump | ←→:Move</p>
+                <p style="font-size: 10px; margin: 1px 0;">Z:Atomic | X:Pepper | C:Cheese | Space:Broccoli</p>
+            `;
+            
+            const startButton = document.createElement('button');
+            startButton.textContent = 'Start';
+            startButton.style.cssText = `
+                margin-top: 3px;
+                padding: 2px 8px;
+                font-size: 10px;
+                background: #4CAF50;
+                color: white;
+                border: none;
+                border-radius: 3px;
+                cursor: pointer;
+                font-family: var(--game-font);
+            `;
+            
+            startButton.addEventListener('click', () => {
+                this.isRunning = true;
+                overlay.remove();
+            });
+            
+            overlay.appendChild(instructions);
+            overlay.appendChild(startButton);
+            document.body.appendChild(overlay);
+        } else {
+            // For desktop: Create a standard overlay
+            const overlay = document.createElement('div');
+            overlay.id = 'gameStartOverlay';
+            overlay.style.cssText = `
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: rgba(0, 0, 0, 0.8);
+                padding: 20px;
+                border-radius: 10px;
+                color: white;
+                text-align: center;
+                z-index: 1000;
+                font-family: var(--game-font);
+                max-width: 400px;
+            `;
+            
+            const instructions = document.createElement('div');
+            instructions.innerHTML = `
+                <h2>Controls:</h2>
+                <p>↑ Jump | ← → Move</p>
+                <h3>Fart Powers:</h3>
+                <p>Z: Atomic - Nuclear mushroom cloud</p>
+                <p>X: Ghost Pepper - Long-range spicy blast</p>
+                <p>C: Cheese - Medium-range stink bomb</p>
+                <p>Space: Broccoli - Short-range fog</p>
+            `;
+            
+            const startButton = document.createElement('button');
+            startButton.textContent = 'Start Game';
+            startButton.style.cssText = `
+                margin-top: 20px;
+                padding: 10px 20px;
+                font-size: 18px;
+                background: #4CAF50;
+                color: white;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+                font-family: var(--game-font);
+            `;
+            
+            startButton.addEventListener('click', () => {
+                this.isRunning = true;
+                overlay.remove();
+            });
+            
+            overlay.appendChild(instructions);
+            overlay.appendChild(startButton);
+            document.body.appendChild(overlay);
+        }
 
-        const instructions = document.createElement('div');
-        instructions.innerHTML = `
-            <h2>Controls:</h2>
-            <p>↑ Jump | ← → Move</p>
-            <h3>Fart Powers:</h3>
-            <p>Z: Atomic - Nuclear mushroom cloud</p>
-            <p>X: Ghost Pepper - Long-range spicy blast</p>
-            <p>C: Cheese - Medium-range stink bomb</p>
-            <p>Space: Broccoli - Short-range fog</p>
-        `;
 
-        const startButton = document.createElement('button');
-        startButton.textContent = 'Start Game';
-        startButton.style.cssText = `
-            margin-top: 20px;
-            padding: 10px 20px;
-            font-size: 18px;
-            background: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-family: var(--game-font);
-        `;
-
-        startButton.addEventListener('click', () => {
-            this.isRunning = true;
-            overlay.remove();
-        });
-
-        overlay.appendChild(instructions);
-        overlay.appendChild(startButton);
-        document.body.appendChild(overlay);
     }
 
     getFartRange(type) {
