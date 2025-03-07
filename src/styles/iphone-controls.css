@@ -1,6 +1,14 @@
-/* iPhone-specific vertical positioning for movement controls */
+/* Mobile device controls positioning */
 
-/* Apply to all iPhones */
+/* Apply to all mobile devices (both iPhone and Android) */
+@media only screen and (max-width: 812px) {
+    #movementControls {
+        bottom: 120px !important; /* Match the vertical position of fart controls */
+        z-index: 9999 !important;
+    }
+}
+
+/* iPhone-specific media queries */
 @media only screen and (max-device-width: 812px) and (-webkit-min-device-pixel-ratio: 2) {
     #movementControls {
         bottom: 120px !important; /* Match the vertical position of fart controls */
@@ -14,6 +22,27 @@
        only screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3),
        only screen and (device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3),
        only screen and (device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3) {
+    #movementControls {
+        bottom: 120px !important; /* Match the vertical position of fart controls */
+        z-index: 9999 !important;
+    }
+}
+
+/* Android-specific media queries */
+@media only screen and (max-width: 812px) and (-webkit-device-pixel-ratio: 2),
+       only screen and (max-width: 812px) and (min-resolution: 192dpi),
+       only screen and (max-width: 812px) and (min-resolution: 2dppx) {
+    #movementControls {
+        bottom: 120px !important; /* Match the vertical position of fart controls */
+        z-index: 9999 !important;
+    }
+}
+
+/* Target common Android phone sizes */
+@media only screen and (max-width: 412px) and (max-height: 915px),
+       only screen and (max-width: 390px) and (max-height: 844px),
+       only screen and (max-width: 360px) and (max-height: 800px),
+       only screen and (max-width: 393px) and (max-height: 851px) {
     #movementControls {
         bottom: 120px !important; /* Match the vertical position of fart controls */
         z-index: 9999 !important;
