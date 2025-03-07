@@ -390,6 +390,15 @@ button, .btn {
         height: var(--button-size-mobile);
         font-size: 20px;
     }
+    
+    /* iPhone-specific controls */
+    @media only screen and (-webkit-min-device-pixel-ratio: 2) {
+        #movementControls {
+            left: auto !important; /* Remove left positioning */
+            right: 10px !important; /* Position on the right side */
+            bottom: 120px !important; /* Match the vertical position of fart controls */
+        }
+    }
 }
 
 
